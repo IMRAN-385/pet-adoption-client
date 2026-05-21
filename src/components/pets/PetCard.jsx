@@ -27,7 +27,7 @@ const PetCard = ({ pet, index = 0 }) => {
         boxShadow: 'var(--shadow)',
       }}
     >
-      {/* Image */}
+\
       <div
         className="pet-card-img"
         style={{
@@ -41,7 +41,7 @@ const PetCard = ({ pet, index = 0 }) => {
           ? <img src={pet.imageURL} alt={pet.name} />
           : <span>{SPECIES_EMOJI[pet.species] || '🐾'}</span>
         }
-        {/* Status badge on image */}
+       \
         <span style={{
           position: 'absolute', top: 12, right: 12,
           padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
@@ -54,7 +54,7 @@ const PetCard = ({ pet, index = 0 }) => {
         </span>
       </div>
 
-      {/* Content */}
+   
       <div style={{ padding: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
           <h3 style={{ fontSize: 20 }}>{pet.name}</h3>
@@ -64,7 +64,7 @@ const PetCard = ({ pet, index = 0 }) => {
           {pet.breed} · {pet.age} · {pet.gender}
         </p>
 
-        {/* Tags */}
+        
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
           <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, background: 'var(--primary-light)', color: 'var(--primary)' }}>
             {pet.species}
@@ -74,7 +74,7 @@ const PetCard = ({ pet, index = 0 }) => {
           </span>
         </div>
 
-        {/* Footer row */}
+      
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 19, color: 'var(--primary)', fontWeight: 700 }}>
             ৳{pet.adoptionFee?.toLocaleString()}

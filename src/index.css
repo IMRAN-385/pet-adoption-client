@@ -3,6 +3,7 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
+  /* ── Light mode (default) ── */
   --bg: #FFF8F0;
   --surface: #FFFFFF;
   --surface2: #FFF3E6;
@@ -19,6 +20,24 @@
   --shadow: 0 4px 24px rgba(0,0,0,.07);
   --shadow-lg: 0 12px 40px rgba(0,0,0,.13);
   --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Dark mode ── */
+.dark {
+  --bg: #0E0C0A;
+  --surface: #1C1814;
+  --surface2: #242018;
+  --primary: #F0866A;
+  --primary-dark: #E8612A;
+  --primary-light: rgba(240,134,106,.15);
+  --accent: #4ABA78;
+  --accent-light: rgba(74,186,120,.15);
+  --text: #F5F0EA;
+  --text2: #C8B8A4;
+  --text3: #7A6858;
+  --border: #3A2E22;
+  --shadow: 0 4px 24px rgba(0,0,0,.3);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
 }
 
 body {
