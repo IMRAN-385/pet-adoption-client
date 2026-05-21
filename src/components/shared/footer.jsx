@@ -17,7 +17,6 @@ const Footer = () => (
           <div style={{ display: 'flex', gap: 10, marginTop: 18 }}>
             {[
               { label: 'Facebook', icon: 'f' },
-              { label: 'Instagram', icon: '📸' },
               { label: 'Twitter', icon: 'x' },
               { label: 'YouTube', icon: '▶' },
             ].map(({ label, icon }) => (
@@ -125,7 +124,7 @@ const Footer = () => (
       {/* Bottom bar */}
       <div style={{ borderTop: '1px solid #2a2010', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
         <p style={{ fontSize: 12, color: '#6b5b47' }}>
-          © {new Date().getFullYear()} PawsHome. All rights reserved. Made with 🧡 for pets everywhere.
+          © {new Date().getFullYear()} PawsHome. All rights reserved. Made with for pets everywhere.
         </p>
         <div style={{ display: 'flex', gap: 20 }}>
           {['Privacy Policy', 'Terms of Service'].map(t => (

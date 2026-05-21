@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import Navbar from '../components/shared/Navbar';
+import Navbar from '../shared/Navbar';
 
 const links = [
   { to: '/dashboard', icon: '⚡', label: 'Overview', end: true },
