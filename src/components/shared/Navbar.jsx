@@ -87,7 +87,7 @@ const Navbar = () => {
       onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-light)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
       onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
     >
-      {dark ? '☀️' : '🌙'}
+      {dark ? '💡' : '🌑'}
     </button>
   );
 
