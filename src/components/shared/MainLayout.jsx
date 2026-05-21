@@ -1,11 +1,11 @@
 import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
+import Navbar from '../components/shared/Navbar';
+import Footer from '../components/shared/Footer';
 
 const MainLayout = () => (
   <>
     <Navbar />
-    <main>
+    <main style={{ minHeight: 'calc(100vh - 64px)' }}>
       <Outlet />
     </main>
     <Footer />

@@ -1,94 +1,80 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
-const SPECIES_EMOJI = { Dog: '🐕', Cat: '🐈', Bird: '🦜', Rabbit: '🐰' };
+const SPECIES_EMOJI = { Dog: '🐕', Cat: '🐈', Bird: '🦜', Rabbit: '🐰', Other: '🐾' };
+
+const statusStyle = {
+  available: { background: '#E5F4EC', color: '#0F6E56' },
+  adopted:   { background: '#F3E8FF', color: '#7C3AED' },
+};
 
 const PetCard = ({ pet, index = 0 }) => {
-  const { user } = useAuth();
-
-  const handleViewClick = (e) => {
-    if (!user) {
-      e.preventDefault();
-      toast.error('Please login to view pet details');
-    }
-  };
-
-  const delayClass = ['delay-1','delay-2','delay-3','delay-4','delay-5','delay-6'][index % 6];
+  const navigate = useNavigate();
 
   return (
     <div
-      className={`pet-card animate-fadeInUp ${delayClass}`}
+      className={`pet-card animate-fadeInUp delay-${(index % 6) + 1}`}
+      onClick={() => navigate(`/pets/${pet._id}`)}
       style={{
-        background: 'var(--surface)',
-        borderRadius: 'var(--radius)',
-        border: '1px solid var(--border)',
-        overflow: 'hidden',
-        boxShadow: 'var(--shadow)',
+        background: 'var(--surface)', borderRadius: 16,
+        border: '1px solid var(--border)', overflow: 'hidden',
+        boxShadow: 'var(--shadow)', cursor: 'pointer',
       }}
     >
-\
-      <div
-        className="pet-card-img"
-        style={{
-          width: '100%', height: 220,
-          background: 'var(--surface2)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 80, position: 'relative',
-        }}
-      >
+      {/* Image */}
+      <div className="pet-card-img" style={{
+        height: 215, background: 'var(--surface2)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 72, position: 'relative', overflow: 'hidden',
+      }}>
         {pet.imageURL
-          ? <img src={pet.imageURL} alt={pet.name} />
+          ? <img src={pet.imageURL} alt={pet.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           : <span>{SPECIES_EMOJI[pet.species] || '🐾'}</span>
         }
-       \
         <span style={{
-          position: 'absolute', top: 12, right: 12,
-          padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
-          background: pet.status === 'available' ? 'var(--accent)' : '#7C3AED',
-          color: '#fff',
-          boxShadow: '0 2px 8px rgba(0,0,0,.2)',
-          textTransform: 'uppercase', letterSpacing: '.5px',
-        }}>
-          {pet.status === 'available' ? '✓ Available' : 'Adopted'}
-        </span>
+          position: 'absolute', top: 10, right: 10,
+          padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
+          ...(statusStyle[pet.status] || statusStyle.available),
+        }}>{pet.status}</span>
       </div>
 
-   
-      <div style={{ padding: 20 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
-          <h3 style={{ fontSize: 20 }}>{pet.name}</h3>
-          <span style={{ fontSize: 13, color: 'var(--text3)' }}>📍 {pet.location}</span>
-        </div>
-        <p style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 12 }}>
-          {pet.breed} · {pet.age} · {pet.gender}
-        </p>
-
-        
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
-          <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, background: 'var(--primary-light)', color: 'var(--primary)' }}>
-            {pet.species}
-          </span>
-          <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 12, fontWeight: 500, background: '#E6F4FF', color: '#1565C0' }}>
-            {pet.healthStatus || 'Good'}
+      {/* Body */}
+      <div style={{ padding: '14px 16px 16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 2 }}>
+          <h3 style={{ fontSize: 19, margin: 0 }}>{pet.name}</h3>
+          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 15, fontWeight: 700, color: 'var(--primary)', flexShrink: 0 }}>
+            ৳{pet.adoptionFee?.toLocaleString() || 0}
           </span>
         </div>
+        <p style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>{pet.breed} · {pet.age}</p>
 
-      
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 19, color: 'var(--primary)', fontWeight: 700 }}>
-            ৳{pet.adoptionFee?.toLocaleString()}
-          </span>
-          <Link
-            to={user ? `/pets/${pet._id}` : '/login'}
-            onClick={handleViewClick}
-            className="btn-primary"
+        {/* Tags */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+          {[
+            `${SPECIES_EMOJI[pet.species] || ''} ${pet.species}`,
+            pet.gender,
+            pet.healthStatus,
+          ].filter(Boolean).map(tag => (
+            <span key={tag} style={{
+              padding: '3px 10px', borderRadius: 20, fontSize: 11,
+              background: 'var(--surface2)', color: 'var(--text3)',
+              border: '1px solid var(--border)',
+            }}>{tag}</span>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: 12, color: 'var(--text3)' }}>📍 {pet.location}</span>
+          <button
+            onClick={e => { e.stopPropagation(); navigate(`/pets/${pet._id}`); }}
             style={{
-              padding: '8px 18px', borderRadius: 10, fontSize: 13, fontWeight: 600,
-              background: 'var(--primary)', color: '#fff', textDecoration: 'none',
-              display: 'inline-block',
+              padding: '7px 16px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+              background: 'var(--primary-light)', color: 'var(--primary)',
+              border: 'none', cursor: 'pointer', transition: 'all 0.2s',
             }}
-          >View Details →</Link>
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary)'; e.currentTarget.style.color = '#fff'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--primary-light)'; e.currentTarget.style.color = 'var(--primary)'; }}
+          >View Details</button>
         </div>
       </div>
     </div>
