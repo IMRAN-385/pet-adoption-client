@@ -1,10 +1,4 @@
 
-
-
-
-
-
-// src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
@@ -18,7 +12,7 @@ const firebaseConfig = {
   measurementId: "G-WNY61WF8GM"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);

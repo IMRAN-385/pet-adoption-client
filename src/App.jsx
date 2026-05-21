@@ -6,7 +6,7 @@ import MainLayout from './components/shared/MainLayout';
 import DashboardLayout from './components/shared/DashboardLayout';
 
 // Pages
-import HomePage from './pages/HomePage';
+import Homepage from './pages/Homepage';
 import AllPetsPage from './pages/AllPetsPage';
 import PetDetailPage from './pages/PetDetailPage';
 import PetCarePage from './pages/PetCarePage';
@@ -41,10 +41,11 @@ function App() {
             error: { iconTheme: { primary: '#E53E3E', secondary: '#fff' } },
           }}
         />
+
         <Routes>
           {/* Main layout routes */}
           <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<Homepage />} />
             <Route path="/pets" element={<AllPetsPage />} />
             <Route path="/pets/:id" element={<PrivateRoute><PetDetailPage /></PrivateRoute>} />
             <Route path="/pet-care" element={<PetCarePage />} />

@@ -4,71 +4,107 @@ import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
   const { user, logoutUser } = useAuth();
-  const [open, setOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropOpen, setDropOpen]   = useState(false);
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const [scrolled, setScrolled]   = useState(false);
   const dropRef = useRef();
   const nav = useNavigate();
 
+  /* close dropdown on outside click */
   useEffect(() => {
     const handler = (e) => {
-      if (dropRef.current && !dropRef.current.contains(e.target)) setOpen(false);
+      if (dropRef.current && !dropRef.current.contains(e.target)) setDropOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  /* navbar shadow on scroll */
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  /* close mobile menu on route change */
+  useEffect(() => { setMenuOpen(false); }, [nav]);
+
   const navLinkStyle = ({ isActive }) => ({
-    padding: '8px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
+    padding: '8px 16px',
+    borderRadius: 8,
+    fontSize: 14,
+    fontWeight: 500,
     color: isActive ? 'var(--primary)' : 'var(--text2)',
     background: isActive ? 'var(--primary-light)' : 'transparent',
-    textDecoration: 'none', transition: '.2s',
+    textDecoration: 'none',
+    transition: 'all 0.2s ease',
+    position: 'relative',
   });
+
+  const navItems = [
+    { to: '/',          label: 'Home',     end: true },
+    { to: '/pets',      label: 'All Pets', end: false },
+    { to: '/pet-care',  label: 'Pet Care', end: false },
+    ...(user ? [{ to: '/my-requests', label: 'My Requests', end: false }] : []),
+  ];
 
   return (
     <nav style={{
-      background: 'var(--surface)', borderBottom: '1px solid var(--border)',
+      background: 'var(--surface)',
+      borderBottom: '1px solid var(--border)',
       position: 'sticky', top: 0, zIndex: 100,
-      boxShadow: '0 2px 12px rgba(0,0,0,.06)'
+      boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,.1)' : '0 2px 8px rgba(0,0,0,.04)',
+      transition: 'box-shadow 0.3s ease',
     }}>
       <div style={{
         maxWidth: 1200, margin: '0 auto', padding: '0 24px',
-        display: 'flex', alignItems: 'center', height: 68, gap: 24
+        display: 'flex', alignItems: 'center', height: 68, gap: 24,
       }}>
-        {/* Logo */}
+
+        {/* ── Logo ── */}
         <Link to="/" style={{
           display: 'flex', alignItems: 'center', gap: 10,
           fontFamily: "'Playfair Display', serif", fontSize: 22,
-          fontWeight: 900, color: 'var(--primary)', textDecoration: 'none'
-        }}>
-          🐾 PawsHome
+          fontWeight: 900, color: 'var(--primary)', textDecoration: 'none',
+          transition: 'transform 0.2s ease',
+        }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          <span style={{ fontSize: 24, display: 'inline-block', animation: 'pawBounce 3s ease-in-out infinite' }}>🐾</span>
+          PawsHome
         </Link>
 
-        {/* Desktop Nav */}
-        <div style={{ display: 'flex', gap: 4, marginLeft: 'auto' }} className="desktop-nav">
-          <NavLink to="/" end style={navLinkStyle}>Home</NavLink>
-          <NavLink to="/pets" style={navLinkStyle}>All Pets</NavLink>
-          <NavLink to="/pet-care" style={navLinkStyle}>Pet Care</NavLink>
-          {user && <NavLink to="/my-requests" style={navLinkStyle}>My Requests</NavLink>}
+        {/* ── Desktop Nav ── */}
+        <div className="desktop-nav" style={{ display: 'flex', gap: 4, marginLeft: 'auto' }}>
+          {navItems.map(({ to, label, end }) => (
+            <NavLink key={to} to={to} end={end} style={navLinkStyle}
+              onMouseEnter={e => { if (!e.currentTarget.classList.contains('active')) e.currentTarget.style.background = 'var(--surface2)'; }}
+              onMouseLeave={e => { if (!e.currentTarget.classList.contains('active')) e.currentTarget.style.background = 'transparent'; }}
+            >{label}</NavLink>
+          ))}
         </div>
 
-        {/* Auth */}
+        {/* ── Auth section ── */}
         {user ? (
-          <div ref={dropRef} style={{ position: 'relative' }}>
+          <div ref={dropRef} style={{ position: 'relative', marginLeft: 'auto' }} className="desktop-nav">
             <button
-              onClick={() => setOpen(!open)}
+              onClick={() => setDropOpen(o => !o)}
               style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 padding: '6px 12px', borderRadius: 10,
-                border: '1.5px solid var(--border)', background: 'var(--surface)',
-                cursor: 'pointer', transition: '.2s',
+                border: `1.5px solid ${dropOpen ? 'var(--primary)' : 'var(--border)'}`,
+                background: 'var(--surface)', cursor: 'pointer',
+                transition: 'all 0.2s ease',
               }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+              onMouseLeave={e => { if (!dropOpen) e.currentTarget.style.borderColor = 'var(--border)'; }}
             >
               <div style={{
                 width: 32, height: 32, borderRadius: '50%',
                 background: 'var(--primary)', color: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 700, fontSize: 13, flexShrink: 0,
-                overflow: 'hidden',
+                fontWeight: 700, fontSize: 13, flexShrink: 0, overflow: 'hidden',
               }}>
                 {user.photoURL
                   ? <img src={user.photoURL} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -78,53 +114,149 @@ const Navbar = () => {
               <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text)' }}>
                 {user.name?.split(' ')[0]}
               </span>
-              <span style={{ fontSize: 12, color: 'var(--text3)' }}>▾</span>
+              <span style={{
+                fontSize: 10, color: 'var(--text3)',
+                transition: 'transform 0.2s',
+                transform: dropOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+              }}>▾</span>
             </button>
-            {open && (
-              <div style={{
-                position: 'absolute', top: 'calc(100% + 6px)', right: 0,
+
+            {dropOpen && (
+              <div className="dropdown-menu" style={{
+                position: 'absolute', top: 'calc(100% + 8px)', right: 0,
                 background: 'var(--surface)', border: '1px solid var(--border)',
-                borderRadius: 12, minWidth: 180,
-                boxShadow: '0 8px 32px rgba(0,0,0,.1)', zIndex: 50, overflow: 'hidden'
+                borderRadius: 14, minWidth: 190,
+                boxShadow: '0 12px 40px rgba(0,0,0,.13)', zIndex: 50, overflow: 'hidden',
               }}>
+                <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{user.name}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text3)' }}>{user.email}</div>
+                </div>
                 {[
-                  { to: '/dashboard', label: '📊 Dashboard' },
-                  { to: '/dashboard/add-pet', label: '➕ Add Pet' },
-                  { to: '/dashboard/my-listings', label: '🐾 My Listings' },
+                  { to: '/dashboard',              label: '📊 Dashboard'   },
+                  { to: '/dashboard/add-pet',      label: '➕ Add Pet'     },
+                  { to: '/dashboard/my-listings',  label: '🐾 My Listings' },
+                  { to: '/my-requests',            label: '📋 My Requests' },
                 ].map(({ to, label }) => (
                   <Link
                     key={to} to={to}
-                    onClick={() => setOpen(false)}
+                    onClick={() => setDropOpen(false)}
                     style={{
                       display: 'block', padding: '10px 16px', fontSize: 14,
-                      color: 'var(--text2)', textDecoration: 'none', transition: '.2s',
+                      color: 'var(--text2)', textDecoration: 'none', transition: 'all 0.15s',
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--surface2)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface2)'; e.currentTarget.style.color = 'var(--primary)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text2)'; }}
                   >{label}</Link>
                 ))}
-                <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '4px 0' }} />
-                <button
-                  onClick={() => { logoutUser(); setOpen(false); nav('/'); }}
-                  style={{
-                    display: 'block', width: '100%', padding: '10px 16px',
-                    fontSize: 14, color: '#e53e3e', background: 'none',
-                    border: 'none', textAlign: 'left', cursor: 'pointer',
-                  }}
-                >🚪 Logout</button>
+                <div style={{ borderTop: '1px solid var(--border)', padding: '4px 0' }}>
+                  <button
+                    onClick={() => { logoutUser(); setDropOpen(false); nav('/'); }}
+                    style={{
+                      display: 'block', width: '100%', padding: '10px 16px',
+                      fontSize: 14, color: '#e53e3e', background: 'none',
+                      border: 'none', textAlign: 'left', cursor: 'pointer', transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#fff0f0'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                  >🚪 Logout</button>
+                </div>
               </div>
             )}
           </div>
         ) : (
-          <Link to="/login"
-            style={{
-              padding: '10px 22px', borderRadius: 10, fontWeight: 600,
-              fontSize: 14, background: 'var(--primary)', color: '#fff',
-              textDecoration: 'none', transition: '.2s',
+          <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }} className="desktop-nav">
+            <Link to="/login" style={{
+              padding: '9px 20px', borderRadius: 10, fontWeight: 600, fontSize: 14,
+              color: 'var(--primary)', border: '1.5px solid var(--primary)', textDecoration: 'none',
+              transition: 'all 0.2s ease',
             }}
-          >Login</Link>
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-light)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+            >Login</Link>
+            <Link to="/register" style={{
+              padding: '9px 20px', borderRadius: 10, fontWeight: 600, fontSize: 14,
+              background: 'var(--primary)', color: '#fff', textDecoration: 'none',
+              transition: 'all 0.2s ease',
+            }}
+              onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-dark)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'var(--primary)'}
+            >Register</Link>
+          </div>
         )}
+
+        {/* ── Hamburger (mobile) ── */}
+        <button
+          className="mobile-only"
+          onClick={() => setMenuOpen(o => !o)}
+          style={{
+            marginLeft: 'auto', background: 'none', border: 'none',
+            cursor: 'pointer', padding: 8, display: 'none',
+          }}
+          aria-label="Toggle menu"
+        >
+          <div style={{ width: 22, display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {[0, 1, 2].map(i => (
+              <span key={i} style={{
+                display: 'block', height: 2, background: 'var(--text)',
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                transform: menuOpen
+                  ? i === 0 ? 'rotate(45deg) translate(5px, 5px)'
+                    : i === 2 ? 'rotate(-45deg) translate(5px, -5px)'
+                    : 'scaleX(0)'
+                  : 'none',
+                opacity: menuOpen && i === 1 ? 0 : 1,
+              }} />
+            ))}
+          </div>
+        </button>
       </div>
+
+      {/* ── Mobile Menu ── */}
+      {menuOpen && (
+        <div className="mobile-menu" style={{
+          borderTop: '1px solid var(--border)',
+          background: 'var(--surface)',
+          padding: '12px 16px 16px',
+        }}>
+          {navItems.map(({ to, label, end }) => (
+            <NavLink
+              key={to} to={to} end={end}
+              onClick={() => setMenuOpen(false)}
+              style={({ isActive }) => ({
+                display: 'block', padding: '11px 16px', borderRadius: 10,
+                fontSize: 15, fontWeight: 500, marginBottom: 4,
+                color: isActive ? 'var(--primary)' : 'var(--text2)',
+                background: isActive ? 'var(--primary-light)' : 'transparent',
+                textDecoration: 'none',
+              })}
+            >{label}</NavLink>
+          ))}
+          <div style={{ marginTop: 8, borderTop: '1px solid var(--border)', paddingTop: 12, display: 'flex', gap: 8 }}>
+            {user ? (
+              <button
+                onClick={() => { logoutUser(); setMenuOpen(false); nav('/'); }}
+                style={{
+                  flex: 1, padding: '10px', borderRadius: 10, fontWeight: 600,
+                  fontSize: 14, background: '#FFE8E8', color: '#C53030', border: 'none', cursor: 'pointer',
+                }}
+              >🚪 Logout</button>
+            ) : (
+              <>
+                <Link to="/login" onClick={() => setMenuOpen(false)} style={{
+                  flex: 1, padding: '10px', borderRadius: 10, fontWeight: 600, fontSize: 14,
+                  color: 'var(--primary)', border: '1.5px solid var(--primary)', textAlign: 'center',
+                }}>Login</Link>
+                <Link to="/register" onClick={() => setMenuOpen(false)} style={{
+                  flex: 1, padding: '10px', borderRadius: 10, fontWeight: 600, fontSize: 14,
+                  background: 'var(--primary)', color: '#fff', textAlign: 'center',
+                }}>Register</Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
