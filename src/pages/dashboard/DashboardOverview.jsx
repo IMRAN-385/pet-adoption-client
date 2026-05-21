@@ -27,10 +27,10 @@ const DashboardOverview = () => {
   ];
 
   const quickActions = [
-    { to: '/dashboard/add-pet',      label: '➕ Add New Pet',    primary: true  },
-    { to: '/dashboard/my-listings',  label: '🐾 My Listings',   primary: false },
-    { to: '/my-requests',            label: '📋 My Requests',   primary: false },
-    { to: '/pets',                   label: '🔍 Browse Pets',   primary: false },
+    { to: '/dashboard/add-pet',      label: ' Add New Pet',    primary: true  },
+    { to: '/dashboard/my-listings',  label: ' My Listings',   primary: false },
+    { to: '/my-requests',            label: ' My Requests',   primary: false },
+    { to: '/pets',                   label: ' Browse Pets',   primary: false },
   ];
 
   return (
