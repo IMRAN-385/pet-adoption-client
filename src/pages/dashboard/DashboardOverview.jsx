@@ -35,7 +35,7 @@ const DashboardOverview = () => {
 
   return (
     <div className="page-enter">
-      {/* Welcome */}
+      
       <div className="animate-fadeInUp" style={{ marginBottom: 28 }}>
         <h2 style={{ marginBottom: 4 }}>
           Welcome back, {user?.name?.split(' ')[0]}! 👋
@@ -45,7 +45,6 @@ const DashboardOverview = () => {
         </p>
       </div>
 
-      {/* Stats grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(140px,1fr))', gap: 16, marginBottom: 28 }}>
         {stats.map((s, i) => (
           <div
@@ -72,7 +71,7 @@ const DashboardOverview = () => {
         ))}
       </div>
 
-      {/* Quick Actions */}
+      
       <div className="animate-fadeInUp delay-4" style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--border)', padding: 24, marginBottom: 24 }}>
         <h3 style={{ marginBottom: 16, fontSize: 17 }}>Quick Actions</h3>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -95,7 +94,7 @@ const DashboardOverview = () => {
         </div>
       </div>
 
-      {/* Recent listings mini preview */}
+      
       {myPets.length > 0 && (
         <div className="animate-fadeInUp delay-5" style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--border)', padding: 24 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>

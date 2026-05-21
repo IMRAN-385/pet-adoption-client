@@ -74,7 +74,7 @@ const Navbar = () => {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
 
-        {/* ── Logo ── */}
+       
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
           <div style={{
             width: 36, height: 36, background: 'var(--primary)', borderRadius: 10,
@@ -86,7 +86,7 @@ const Navbar = () => {
           </span>
         </Link>
 
-        {/* ── Desktop Nav ── */}
+      
         <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           {publicLinks.map(({ to, label, end }) => (
             <NavLink key={to} to={to} end={end} style={navLinkStyle}
@@ -102,7 +102,6 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* ── Right Side ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {user ? (
             <div ref={dropRef} style={{ position: 'relative' }}>
@@ -151,10 +150,10 @@ const Navbar = () => {
                   </div>
 
                   {[
-                    { to: '/dashboard', icon: '⚡', label: 'Dashboard' },
-                    { to: '/dashboard/my-listings', icon: '🐾', label: 'My Listings' },
-                    { to: '/my-requests', icon: '📋', label: 'My Requests' },
-                    { to: '/dashboard/add-pet', icon: '➕', label: 'Add Pet' },
+                    { to: '/dashboard', label: 'Dashboard' },
+                    { to: '/dashboard/my-listings', label: 'My Listings' },
+                    { to: '/my-requests', label: 'My Requests' },
+                    { to: '/dashboard/add-pet',  label: 'Add Pet' },
                   ].map(({ to, icon, label }) => (
                     <Link key={to} to={to} onClick={() => setDropOpen(false)} style={{
                       display: 'flex', alignItems: 'center', gap: 10,
@@ -199,7 +198,7 @@ const Navbar = () => {
             >Login</Link>
           )}
 
-          {/* Mobile Toggle */}
+        
           <button className="mobile-only" onClick={() => setMobileOpen(o => !o)} style={{
             background: 'var(--surface2)', border: '1px solid var(--border)',
             borderRadius: 8, width: 36, height: 36,
@@ -209,7 +208,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* ── Mobile Menu ── */}
+    
       {mobileOpen && (
         <div className="mobile-menu" style={{
           borderTop: '1px solid var(--border)',
