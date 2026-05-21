@@ -1,40 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-
-/* ── Dark mode hook ── */
-const useDarkMode = () => {
-  const [dark, setDark] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    const saved = localStorage.getItem('theme');
-    if (saved) return saved === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (dark) {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [dark]);
-
-  return [dark, setDark];
-};
+import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const { user, logoutUser } = useAuth();
+  const navigate = useNavigate();
   const [dropOpen, setDropOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [dark, setDark] = useDarkMode();
-  const dropRef = useRef();
-  const nav = useNavigate();
+  const dropRef = useRef(null);
 
-  /* outside click closes dropdown */
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   useEffect(() => {
     const handler = (e) => {
       if (dropRef.current && !dropRef.current.contains(e.target)) setDropOpen(false);
@@ -43,243 +25,231 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  /* scroll shadow */
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  /* close mobile menu on navigate */
-  useEffect(() => { setMenuOpen(false); }, [nav]);
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      toast.success('Logged out successfully');
+      navigate('/');
+    } catch {
+      toast.error('Logout failed');
+    } finally {
+      setDropOpen(false);
+      setMobileOpen(false);
+    }
+  };
 
   const navLinkStyle = ({ isActive }) => ({
-    padding: '8px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
+    fontSize: 14,
+    fontWeight: 500,
     color: isActive ? 'var(--primary)' : 'var(--text2)',
+    textDecoration: 'none',
+    padding: '6px 12px',
+    borderRadius: 8,
     background: isActive ? 'var(--primary-light)' : 'transparent',
-    textDecoration: 'none', transition: 'all 0.2s ease',
+    transition: 'all 0.2s',
   });
 
-  const navItems = [
-    { to: '/',           label: 'Home',        end: true  },
-    { to: '/pets',       label: 'All Pets',    end: false },
-    { to: '/pet-care',   label: 'Pet Care',    end: false },
-    ...(user ? [{ to: '/my-requests', label: 'My Requests', end: false }] : []),
+  const publicLinks = [
+    { to: '/', label: 'Home', end: true },
+    { to: '/pets', label: 'All Pets' },
+    { to: '/pet-care', label: 'Pet Care' },
   ];
 
-  /* ── Theme toggle button ── */
-  const ThemeToggle = ({ mobile = false }) => (
-    <button
-      onClick={() => setDark(d => !d)}
-      title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-      style={{
-        width: mobile ? 40 : 36,
-        height: mobile ? 40 : 36,
-        borderRadius: 10,
-        border: '1.5px solid var(--border)',
-        background: 'var(--surface)',
-        cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: mobile ? 18 : 16,
-        transition: 'all 0.2s ease',
-        flexShrink: 0,
-      }}
-      onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-light)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
-      onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
-    >
-      {dark ? '💡' : '🌑'}
-    </button>
-  );
+  const privateLinks = [
+    { to: '/my-requests', label: 'My Requests' },
+    { to: '/dashboard/add-pet', label: 'Add Pet' },
+  ];
 
   return (
     <nav style={{
+      position: 'sticky', top: 0, zIndex: 100,
       background: 'var(--surface)',
       borderBottom: '1px solid var(--border)',
-      position: 'sticky', top: 0, zIndex: 100,
-      boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,.1)' : '0 2px 8px rgba(0,0,0,.04)',
-      transition: 'box-shadow 0.3s ease',
+      boxShadow: scrolled ? 'var(--shadow)' : 'none',
+      transition: 'box-shadow 0.3s',
     }}>
       <div style={{
-        maxWidth: 1200, margin: '0 auto', padding: '0 24px',
-        display: 'flex', alignItems: 'center', height: 68, gap: 24,
+        maxWidth: 1200, margin: '0 auto',
+        padding: '0 24px', height: 64,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
 
-        {/* Logo */}
-        <Link to="/" style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          fontFamily: "'Playfair Display', serif", fontSize: 22,
-          fontWeight: 900, color: 'var(--primary)', textDecoration: 'none',
-          transition: 'transform 0.2s ease',
-        }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-        >
-          <span style={{ fontSize: 24, display: 'inline-block', animation: 'pawBounce 3s ease-in-out infinite' }}>🐾</span>
-          PawsHome
+        {/* ── Logo ── */}
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+          <div style={{
+            width: 36, height: 36, background: 'var(--primary)', borderRadius: 10,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
+            animation: 'pawBounce 3s ease-in-out infinite',
+          }}>🐾</div>
+          <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, fontSize: 20, color: 'var(--text)' }}>
+            PawsHome
+          </span>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <div className="desktop-nav" style={{ display: 'flex', gap: 4, marginLeft: 'auto' }}>
-          {navItems.map(({ to, label, end }) => (
+        {/* ── Desktop Nav ── */}
+        <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {publicLinks.map(({ to, label, end }) => (
             <NavLink key={to} to={to} end={end} style={navLinkStyle}
-              onMouseEnter={e => { if (!e.currentTarget.classList.contains('active')) e.currentTarget.style.background = 'var(--surface2)'; }}
-              onMouseLeave={e => { if (!e.currentTarget.classList.contains('active')) e.currentTarget.style.background = 'transparent'; }}
+              onMouseEnter={e => { if (!e.currentTarget.className.includes('active')) e.currentTarget.style.color = 'var(--primary)'; }}
+              onMouseLeave={e => { if (!e.currentTarget.className.includes('active')) e.currentTarget.style.color = 'var(--text2)'; }}
+            >{label}</NavLink>
+          ))}
+          {user && privateLinks.map(({ to, label }) => (
+            <NavLink key={to} to={to} style={navLinkStyle}
+              onMouseEnter={e => { if (!e.currentTarget.className.includes('active')) e.currentTarget.style.color = 'var(--primary)'; }}
+              onMouseLeave={e => { if (!e.currentTarget.className.includes('active')) e.currentTarget.style.color = 'var(--text2)'; }}
             >{label}</NavLink>
           ))}
         </div>
 
-        {/* Desktop Right — theme toggle + auth */}
-        <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <ThemeToggle />
-
+        {/* ── Right Side ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {user ? (
             <div ref={dropRef} style={{ position: 'relative' }}>
               <button
                 onClick={() => setDropOpen(o => !o)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '6px 12px', borderRadius: 10,
-                  border: `1.5px solid ${dropOpen ? 'var(--primary)' : 'var(--border)'}`,
-                  background: 'var(--surface)', cursor: 'pointer',
-                  transition: 'all 0.2s ease',
+                  background: 'var(--surface2)', border: '1px solid var(--border)',
+                  borderRadius: 50, padding: '4px 12px 4px 4px',
+                  cursor: 'pointer', transition: 'all 0.2s',
                 }}
                 onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                onMouseLeave={e => { if (!dropOpen) e.currentTarget.style.borderColor = 'var(--border)'; }}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
               >
                 <div style={{
-                  width: 32, height: 32, borderRadius: '50%',
-                  background: 'var(--primary)', color: '#fff',
+                  width: 32, height: 32, borderRadius: '50%', overflow: 'hidden',
+                  background: 'var(--primary-light)', flexShrink: 0,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontWeight: 700, fontSize: 13, flexShrink: 0, overflow: 'hidden',
+                  fontSize: 13, fontWeight: 700, color: 'var(--primary)',
                 }}>
-                  {user.photoURL
-                    ? <img src={user.photoURL} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : user.name?.[0]?.toUpperCase()
+                  {(user.photoURL || user.photo)
+                    ? <img src={user.photoURL || user.photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }} />
+                    : (user.name || user.displayName || 'U').charAt(0).toUpperCase()
                   }
                 </div>
-                <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text)' }}>
-                  {user.name?.split(' ')[0]}
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', maxWidth: 90, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {(user.name || user.displayName || 'User').split(' ')[0]}
                 </span>
-                <span style={{
-                  fontSize: 10, color: 'var(--text3)',
-                  transition: 'transform 0.2s',
-                  transform: dropOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                }}>▾</span>
+                <span style={{ fontSize: 9, color: 'var(--text3)', transform: dropOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', marginLeft: -4 }}>▼</span>
               </button>
 
               {dropOpen && (
                 <div className="dropdown-menu" style={{
-                  position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                  position: 'absolute', top: 'calc(100% + 10px)', right: 0,
                   background: 'var(--surface)', border: '1px solid var(--border)',
-                  borderRadius: 14, minWidth: 190,
-                  boxShadow: '0 12px 40px rgba(0,0,0,.13)', zIndex: 50, overflow: 'hidden',
+                  borderRadius: 14, boxShadow: 'var(--shadow-lg)',
+                  minWidth: 200, overflow: 'hidden', zIndex: 300,
                 }}>
-                  <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{user.name}</div>
-                    <div style={{ fontSize: 11, color: 'var(--text3)' }}>{user.email}</div>
+                  <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--border)', background: 'var(--surface2)' }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>
+                      {user.name || user.displayName || 'User'}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--text3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {user.email}
+                    </div>
                   </div>
+
                   {[
-                    { to: '/dashboard',             label: '📊 Dashboard'   },
-                    { to: '/dashboard/add-pet',     label: '➕ Add Pet'     },
-                    { to: '/dashboard/my-listings', label: '🐾 My Listings' },
-                    { to: '/my-requests',           label: '📋 My Requests' },
-                  ].map(({ to, label }) => (
-                    <Link key={to} to={to} onClick={() => setDropOpen(false)}
-                      style={{ display: 'block', padding: '10px 16px', fontSize: 14, color: 'var(--text2)', textDecoration: 'none', transition: 'all 0.15s' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface2)'; e.currentTarget.style.color = 'var(--primary)'; }}
+                    { to: '/dashboard', icon: '⚡', label: 'Dashboard' },
+                    { to: '/dashboard/my-listings', icon: '🐾', label: 'My Listings' },
+                    { to: '/my-requests', icon: '📋', label: 'My Requests' },
+                    { to: '/dashboard/add-pet', icon: '➕', label: 'Add Pet' },
+                  ].map(({ to, icon, label }) => (
+                    <Link key={to} to={to} onClick={() => setDropOpen(false)} style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      padding: '10px 16px', fontSize: 13, color: 'var(--text2)',
+                      textDecoration: 'none', transition: 'all 0.15s',
+                    }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-light)'; e.currentTarget.style.color = 'var(--primary)'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text2)'; }}
-                    >{label}</Link>
+                    >
+                      <span style={{ fontSize: 15 }}>{icon}</span>
+                      <span>{label}</span>
+                    </Link>
                   ))}
-                  <div style={{ borderTop: '1px solid var(--border)', padding: '4px 0' }}>
-                    <button
-                      onClick={() => { logoutUser(); setDropOpen(false); nav('/'); }}
-                      style={{ display: 'block', width: '100%', padding: '10px 16px', fontSize: 14, color: '#e53e3e', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', transition: 'background 0.15s' }}
-                      onMouseEnter={e => e.currentTarget.style.background = '#fff0f0'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                    >🚪 Logout</button>
+
+                  <div style={{ borderTop: '1px solid var(--border)', padding: '6px 0' }}>
+                    <button onClick={handleLogout} style={{
+                      width: '100%', padding: '10px 16px',
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      fontSize: 13, color: '#C53030', fontWeight: 600,
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      transition: 'background 0.15s', textAlign: 'left',
+                    }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#FFE8E8'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <span style={{ fontSize: 15 }}>🚪</span> Logout
+                    </button>
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <Link to="/login" style={{
-                padding: '9px 20px', borderRadius: 10, fontWeight: 600, fontSize: 14,
-                color: 'var(--primary)', border: '1.5px solid var(--primary)', textDecoration: 'none',
-                transition: 'all 0.2s ease',
-              }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-light)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-              >Login</Link>
-              <Link to="/register" style={{
-                padding: '9px 20px', borderRadius: 10, fontWeight: 600, fontSize: 14,
-                background: 'var(--primary)', color: '#fff', textDecoration: 'none',
-                transition: 'all 0.2s ease',
-              }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-dark)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'var(--primary)'}
-              >Register</Link>
-            </div>
+            <Link to="/login" className="btn-primary" style={{
+              padding: '9px 22px', borderRadius: 10,
+              background: 'var(--primary)', color: '#fff',
+              fontSize: 14, fontWeight: 700, textDecoration: 'none',
+              boxShadow: '0 4px 14px rgba(232,97,42,.3)',
+              transition: 'all 0.2s',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-dark)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--primary)'; e.currentTarget.style.transform = 'none'; }}
+            >Login</Link>
           )}
-        </div>
 
-        {/* Hamburger (mobile) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' }} className="mobile-only">
-          <ThemeToggle mobile />
-          <button
-            onClick={() => setMenuOpen(o => !o)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8 }}
-            aria-label="Toggle menu"
-          >
-            <div style={{ width: 22, display: 'flex', flexDirection: 'column', gap: 5 }}>
-              {[0, 1, 2].map(i => (
-                <span key={i} style={{
-                  display: 'block', height: 2, background: 'var(--text)', borderRadius: 2,
-                  transition: 'all 0.3s ease',
-                  transform: menuOpen
-                    ? i === 0 ? 'rotate(45deg) translate(5px, 5px)'
-                      : i === 2 ? 'rotate(-45deg) translate(5px, -5px)'
-                      : 'scaleX(0)'
-                    : 'none',
-                  opacity: menuOpen && i === 1 ? 0 : 1,
-                }} />
-              ))}
-            </div>
-          </button>
+          {/* Mobile Toggle */}
+          <button className="mobile-only" onClick={() => setMobileOpen(o => !o)} style={{
+            background: 'var(--surface2)', border: '1px solid var(--border)',
+            borderRadius: 8, width: 36, height: 36,
+            alignItems: 'center', justifyContent: 'center',
+            fontSize: 18, cursor: 'pointer', color: 'var(--text)',
+          }}>{mobileOpen ? '✕' : '☰'}</button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
+      {/* ── Mobile Menu ── */}
+      {mobileOpen && (
         <div className="mobile-menu" style={{
           borderTop: '1px solid var(--border)',
-          background: 'var(--surface)',
-          padding: '12px 16px 16px',
+          background: 'var(--surface)', padding: '12px 24px 20px',
         }}>
-          {navItems.map(({ to, label, end }) => (
-            <NavLink key={to} to={to} end={end} onClick={() => setMenuOpen(false)}
-              style={({ isActive }) => ({
-                display: 'block', padding: '11px 16px', borderRadius: 10,
-                fontSize: 15, fontWeight: 500, marginBottom: 4,
-                color: isActive ? 'var(--primary)' : 'var(--text2)',
-                background: isActive ? 'var(--primary-light)' : 'transparent',
-                textDecoration: 'none',
-              })}
-            >{label}</NavLink>
+          {publicLinks.map(({ to, label, end }) => (
+            <NavLink key={to} to={to} end={end} onClick={() => setMobileOpen(false)} style={({ isActive }) => ({
+              display: 'block', padding: '11px 0', fontSize: 15,
+              fontWeight: isActive ? 700 : 400,
+              color: isActive ? 'var(--primary)' : 'var(--text2)',
+              textDecoration: 'none', borderBottom: '1px solid var(--border)',
+            })}>{label}</NavLink>
           ))}
-          <div style={{ marginTop: 8, borderTop: '1px solid var(--border)', paddingTop: 12, display: 'flex', gap: 8 }}>
-            {user ? (
-              <button
-                onClick={() => { logoutUser(); setMenuOpen(false); nav('/'); }}
-                style={{ flex: 1, padding: '10px', borderRadius: 10, fontWeight: 600, fontSize: 14, background: '#FFE8E8', color: '#C53030', border: 'none', cursor: 'pointer' }}
-              >🚪 Logout</button>
-            ) : (
-              <>
-                <Link to="/login" onClick={() => setMenuOpen(false)} style={{ flex: 1, padding: '10px', borderRadius: 10, fontWeight: 600, fontSize: 14, color: 'var(--primary)', border: '1.5px solid var(--primary)', textAlign: 'center' }}>Login</Link>
-                <Link to="/register" onClick={() => setMenuOpen(false)} style={{ flex: 1, padding: '10px', borderRadius: 10, fontWeight: 600, fontSize: 14, background: 'var(--primary)', color: '#fff', textAlign: 'center' }}>Register</Link>
-              </>
-            )}
-          </div>
+          {user && privateLinks.map(({ to, label }) => (
+            <NavLink key={to} to={to} onClick={() => setMobileOpen(false)} style={({ isActive }) => ({
+              display: 'block', padding: '11px 0', fontSize: 15,
+              fontWeight: isActive ? 700 : 400,
+              color: isActive ? 'var(--primary)' : 'var(--text2)',
+              textDecoration: 'none', borderBottom: '1px solid var(--border)',
+            })}>{label}</NavLink>
+          ))}
+          {user ? (
+            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <Link to="/dashboard" onClick={() => setMobileOpen(false)} style={{
+                display: 'block', padding: '10px 14px', background: 'var(--surface2)',
+                borderRadius: 10, fontSize: 14, fontWeight: 600, color: 'var(--text)', textDecoration: 'none',
+              }}>⚡ Dashboard</Link>
+              <button onClick={handleLogout} style={{
+                width: '100%', padding: '10px 14px', background: '#FFE8E8',
+                color: '#C53030', border: 'none', borderRadius: 10,
+                fontWeight: 700, fontSize: 14, cursor: 'pointer', textAlign: 'left',
+              }}>🚪 Logout</button>
+            </div>
+          ) : (
+            <Link to="/login" onClick={() => setMobileOpen(false)} style={{
+              display: 'block', marginTop: 12, padding: '11px',
+              background: 'var(--primary)', color: '#fff', borderRadius: 10,
+              fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none',
+            }}>Login</Link>
+          )}
         </div>
       )}
     </nav>
