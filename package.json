@@ -13,7 +13,7 @@
     "@react-icons/all-files": "^4.1.0",
     "@tailwindcss/vite": "^4.3.0",
     "axios": "^1.16.1",
-    "firebase": "^12.13.0",
+    "better-auth": "^1.6.11",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-hot-toast": "^2.6.0",
