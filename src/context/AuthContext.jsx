@@ -39,14 +39,14 @@ export const AuthProvider = ({ children }) => {
   // ✅ Google Login — আগে: signInWithPopup(auth, googleProvider) + googleAuth() API call
   // এখন একটাই call, BetterAuth সব handle করে
   const googleLogin = async () => {
-    const { data, error } = await authClient.signIn.social({
-      provider: 'google',
-      callbackURL: window.location.origin, // login এর পর কোথায় redirect হবে
-    });
+  const { data, error } = await authClient.signIn.social({
+    provider: 'google',
+    callbackURL: 'https://pet-adoption-client-eta.vercel.app',
+  });
 
-    if (error) throw new Error(error.message);
-    return data;
-  };
+  if (error) throw new Error(error.message);
+  return data;
+};
 
   // ✅ Logout — আগে: logout() API + signOut(auth)
   const logoutUser = async () => {
