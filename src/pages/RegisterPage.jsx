@@ -56,17 +56,15 @@ const RegisterPage = () => {
   };
 
   const handleGoogle = async () => {
-    setLoading(true);
-    try {
-      await googleLogin();
-      toast.success('Logged in with Google! 🐾');
-      navigate('/');
-    } catch {
-      toast.error('Google login failed. Try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    await googleLogin();
+    // redirect হবে
+  } catch {
+    setLoading(false);
+    toast.error('Google login failed. Try again.');
+  }
+};
 
   return (
     <div style={{

@@ -60,20 +60,17 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
-  const handleGoogle = async () => {
-    if (loading) return;
-    try {
-      setLoading(true);
-      await googleLogin();
-      toast.success("Logged in with Google!");
-      navigate(from, { replace: true });
-    } catch (err) {
-      toast.error(err?.message || "Google login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+ const handleGoogle = async () => {
+  if (loading) return;
+  setLoading(true);
+  try {
+    await googleLogin();
+    // Google redirect করবে — এরপর কোনো code চলবে না
+  } catch (err) {
+    setLoading(false);
+    toast.error(err?.message || 'Google login failed');
+  }
+};
   return (
     <div
       style={{
