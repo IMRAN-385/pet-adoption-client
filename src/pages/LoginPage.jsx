@@ -36,30 +36,20 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (loading) return;
-    if (!email.trim() || !password.trim()) {
-      toast.error("Please fill all fields");
-      return;
-    }
-    try {
-      setLoading(true);
-      await loginUser(email, password);
-      toast.success("Welcome back! 🐾");
-      // ✅ Small delay দিয়ে navigate — session refetch এর জন্য সময় দেওয়া
-      setTimeout(() => {
-        navigate(from, { replace: true });
-      }, 500);
-    } catch (err) {
-      toast.error(
-        err?.response?.data?.message ||
-          err?.message ||
-          "Invalid email or password",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  if (loading) return;
+  if (!email.trim() || !password.trim()) { toast.error('Please fill all fields'); return; }
+  try {
+    setLoading(true);
+    await loginUser(email, password);
+    toast.success('Welcome back! 🐾');
+    setTimeout(() => navigate(from, { replace: true }), 500);
+  } catch (err) {
+    toast.error(err?.response?.data?.message || err?.message || 'Invalid email or password');
+  } finally {
+    setLoading(false);
+  }
+};
  const handleGoogle = async () => {
   if (loading) return;
   setLoading(true);
