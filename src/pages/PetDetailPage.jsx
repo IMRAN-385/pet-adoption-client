@@ -102,15 +102,16 @@ const PetDetailPage = () => {
         <div className="animate-slideRight">
           <h1 style={{ fontSize: 38, marginBottom: 4 }}>{pet.name}</h1>
           <p style={{ color: 'var(--text2)', marginBottom: 6, fontSize: 16 }}>{pet.breed}</p>
+          {/* Location shown here only — removed from info table below to avoid duplicate */}
           <p style={{ color: 'var(--text3)', fontSize: 13, marginBottom: 24 }}>📍 {pet.location}</p>
 
           {/* Info table */}
           <div style={{ marginBottom: 20 }}>
-            <InfoRow label="Age"               value={pet.age} />
-            <InfoRow label="Gender"            value={pet.gender} />
-            <InfoRow label="Health"            value={pet.healthStatus} />
-            <InfoRow label="Vaccination"       value={pet.vaccinationStatus} />
-            <InfoRow label="Location"          value={pet.location} />
+            <InfoRow label="Age"         value={pet.age} />
+            <InfoRow label="Species"     value={`${SPECIES_EMOJI[pet.species] || '🐾'} ${pet.species}`} />
+            <InfoRow label="Gender"      value={pet.gender} />
+            <InfoRow label="Health"      value={pet.healthStatus} />
+            <InfoRow label="Vaccination" value={pet.vaccinationStatus} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 0' }}>
               <span style={{ fontSize: 13, color: 'var(--text3)' }}>Adoption Fee</span>
               <span style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, fontWeight: 900, color: 'var(--primary)' }}>
@@ -161,7 +162,7 @@ const PetDetailPage = () => {
 
                 {/* Read-only pet + user fields */}
                 {[
-                  { label: 'Pet',   value: pet.name },
+                  { label: 'Pet',        value: pet.name },
                   { label: 'Your Name',  value: user?.name || user?.displayName || '' },
                   { label: 'Your Email', value: user?.email || '' },
                 ].map(({ label, value }) => (
