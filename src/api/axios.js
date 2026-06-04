@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://pet-adoption-server-slno.onrender.com/api',
+  baseURL: 'https://pet-adoption-server-uipt.onrender.com/api',
   withCredentials: true,
   timeout: 12000,
 });

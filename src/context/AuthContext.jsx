@@ -5,14 +5,10 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  // ✅ BetterAuth এর built-in hook — Firebase এর onAuthStateChanged এর replacement
-  // loading: true যখন session check হচ্ছে
-  // data: session object (data.user তে user info)
   const { data: session, isPending: loading, refetch } = authClient.useSession();
 
   const user = session?.user || null;
 
-  // ✅ Register — আগে: register({ name, email, password, photoURL })
   const registerUser = async (name, email, password, photoURL) => {
     const { data, error } = await authClient.signUp.email({
       email,
@@ -22,10 +18,10 @@ export const AuthProvider = ({ children }) => {
     });
 
     if (error) throw new Error(error.message);
+    await refetch();
     return data;
   };
 
-  // ✅ Email Login — আগে: login({ email, password })
   const loginUser = async (email, password) => {
     const { data, error } = await authClient.signIn.email({
       email,
@@ -33,28 +29,24 @@ export const AuthProvider = ({ children }) => {
     });
 
     if (error) throw new Error(error.message);
+    await refetch();
     return data;
   };
 
-  // ✅ Google Login — আগে: signInWithPopup(auth, googleProvider) + googleAuth() API call
-  // এখন একটাই call, BetterAuth সব handle করে
-  const googleLogin = async () => {
-  const { data, error } = await authClient.signIn.social({
+const googleLogin = async () => {
+  await authClient.signIn.social({
     provider: 'google',
-    callbackURL: 'https://pet-adoption-client-eta.vercel.app',
+    callbackURL: 'https://pet-adoption-client-eta.vercel.app/',
   });
-
-  if (error) throw new Error(error.message);
-  return data;
 };
 
-  // ✅ Logout — আগে: logout() API + signOut(auth)
   const logoutUser = async () => {
     const { error } = await authClient.signOut();
     if (error) {
       toast.error('Logout failed');
       return;
     }
+    await refetch();
     toast.success('Logged out successfully');
   };
 
