@@ -33,18 +33,12 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  const googleLogin = async () => {
-    await authClient.signIn.social({
-      provider: 'google',
-      callbackURL: 'https://pet-adoption-client-eta.vercel.app/',
-      fetchOptions: {
-        onSuccess: () => {
-          window.location.href = 'https://pet-adoption-client-eta.vercel.app/';
-        }
-      }
-    });
-  };
-
+const googleLogin = async () => {
+  await authClient.signIn.social({
+    provider: 'google',
+    callbackURL: 'https://pet-adoption-server-uipt.onrender.com/auth-success',
+  });
+};
   const logoutUser = async () => {
     const { error } = await authClient.signOut();
     if (error) {
