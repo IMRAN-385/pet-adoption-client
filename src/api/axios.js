@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://pet-adoption-server-uipt.onrender.com/api',
+  baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api',
   withCredentials: true,
   timeout: 12000,
 });

@@ -1,16 +1,31 @@
-# React + Vite
+# PawsHome — Pet Adoption Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The React frontend client for the PawsHome Pet Adoption platform.
 
-Currently, two official plugins are available:
+## 🛠️ Features Implemented
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Navbar & Navigation:** Public and Private route checks, responsive mobile drawer menu, and user session profile dropdown.
+- **Dynamic Styling & Theming:** Custom dark/light mode toggle with theme state persistent across reloads.
+- **Search, Filter & Sort:**
+  - Real-time search query on pet name and breed.
+  - Multi-species filtering chips.
+  - Custom sort dropdown (Fee: Low-High, Fee: High-Low, Alphabetical Name).
+- **Adoption Request Form:** Interactive modal validating pickup dates and attaching personalized messages.
+- **User Dashboard:** Comprehensive control panel for listings, request status, listing edits, and quick creation form.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ⚡ Setup & Run
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Setup environment variables (`.env`):
+   ```env
+   VITE_API_URL=http://localhost:5000
+   ```
+3. Run the development build:
+   ```bash
+   npm run dev
+   ```
