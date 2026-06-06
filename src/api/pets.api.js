@@ -1,7 +1,8 @@
 import axios from './axios';
 
-export const submitRequest = (petId, data) => axios.post(`/requests/pet/${petId}`, data);
-export const getPetRequests = (petId) => axios.get(`/requests/pet/${petId}`);
-export const getMyRequests = () => axios.get('/requests/my');
-export const updateRequestStatus = (id, status) => axios.patch(`/requests/${id}/status`, { status });
-export const cancelRequest = (id) => axios.delete(`/requests/${id}`);
+export const getAllPets = () => axios.get('/pets');
+export const getPetById = (id) => axios.get(`/pets/${id}`);
+export const getMyPets = () => axios.get('/pets/my');
+export const createPet = (data) => axios.post('/pets', data);
+export const updatePet = (id, data) => axios.put(`/pets/${id}`, data);
+export const deletePet = (id) => axios.delete(`/pets/${id}`);
