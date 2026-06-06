@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@better-auth/infra": "^0.2.12",
     "@react-icons/all-files": "^4.1.0",
     "@tailwindcss/vite": "^4.3.0",
     "axios": "^1.16.1",
