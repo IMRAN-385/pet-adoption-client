@@ -227,60 +227,78 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ── STATS BANNER ── */}
-      <section ref={statsRef} style={{ background: '#b43c1e', padding: '64px 48px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 32, textAlign: 'center' }}>
-          {[
-            { num: '5,000+', label: 'Pets Adopted', icon: '🐾' },
-            { num: '1,200+', label: 'Happy Families', icon: '🏠' },
-            { num: '50+', label: 'Cities Covered', icon: '🗺️' },
-            { num: '98%', label: 'Satisfaction Rate', icon: '⭐' },
-          ].map(({ num, label, icon }, i) => (
-            <div key={label} style={{ ...visStyle(statsVisible, `${i * 0.1}s`) }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>{icon}</div>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{num}</div>
-              <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', marginTop: 8 }}>{label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+     
 
-      {/* ── SUCCESS STORIES ── */}
+      {/* ── SUCCESS STORIES ── (Vertical Staggered / Baka Design) */}
       <section ref={storiesRef} style={{ padding: '88px 48px', background: 'var(--bg)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px,4vw,44px)', textAlign: 'center', marginBottom: 48, ...visStyle(storiesVisible) }}>
+          <h2 style={{ 
+            fontFamily: "'Playfair Display', serif", 
+            fontSize: 'clamp(28px,4vw,44px)', 
+            textAlign: 'center', 
+            marginBottom: 70, 
+            ...visStyle(storiesVisible) 
+          }}>
             Success Stories
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 20 }}>
-            <div style={{ position: 'relative', borderRadius: 24, overflow: 'hidden', height: 480, ...visStyle(storiesVisible, '0.1s') }}>
-              <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=800&q=80" alt="Story" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.75) 50%, transparent)' }} />
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 32 }}>
-                <p style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '.1em', marginBottom: 10, textTransform: 'uppercase' }}>The Rahman Family · Chittagong</p>
-                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, color: '#fff', lineHeight: 1.5 }}>
-                  "Buddy found his tribe, and we found our missing piece. The process was seamless and truly heartwarming."
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 60 }}>
+
+            {/* Story 1 - Left aligned */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 40, 
+              ...visStyle(storiesVisible, '0.1s')
+            }}>
+              <div style={{ flex: 1, textAlign: 'right' }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#b43c1e' }}>RAHMAN FAMILY • CHITTAGONG</p>
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, lineHeight: 1.4, marginTop: 12 }}>
+                  "Buddy found his tribe, and we found our missing piece."
                 </p>
+              </div>
+              <div style={{ width: 420, height: 320, borderRadius: 28, overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}>
+                <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=800&q=80" alt="Story" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ borderRadius: 24, overflow: 'hidden', flex: 1, position: 'relative', ...visStyle(storiesVisible, '0.2s') }}>
-                <img src="https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=600&q=80" alt="Story 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,15,10,0.55)' }} />
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 24 }}>
-                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginBottom: 6 }}>Karim & Ginger · Dhaka</p>
-                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, color: '#fff', fontStyle: 'italic' }}>"Pure companionship at its finest."</p>
-                </div>
-              </div>
-              <div style={{ borderRadius: 24, background: '#b43c1e', padding: 28, flex: 1, ...visStyle(storiesVisible, '0.3s') }}>
-                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 48, color: 'rgba(255,255,255,0.25)', lineHeight: 1, marginBottom: 12 }}>"</div>
-                <p style={{ fontSize: 15, color: '#fff', lineHeight: 1.7, marginBottom: 20 }}>
-                  "The team at PawsHome truly cares about where their animals go. We felt supported every step of the way."
+            {/* Story 2 - Right aligned */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 40, 
+              flexDirection: 'row-reverse',
+              ...visStyle(storiesVisible, '0.2s')
+            }}>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#b43c1e' }}>KARIM & GINGER • DHAKA</p>
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, lineHeight: 1.4, marginTop: 12, fontStyle: 'italic' }}>
+                  "Pure companionship at its finest."
                 </p>
-                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Nadia & Duke · Sylhet</p>
+              </div>
+              <div style={{ width: 420, height: 320, borderRadius: 28, overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}>
+                <img src="https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=800&q=80" alt="Story" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             </div>
+
+            {/* Story 3 - Left aligned */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 40, 
+              ...visStyle(storiesVisible, '0.3s')
+            }}>
+              <div style={{ flex: 1, textAlign: 'right' }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#b43c1e' }}>NADIA & DUKE • SYLHET</p>
+                <p style={{ fontSize: 19, lineHeight: 1.6, marginTop: 12 }}>
+                  The team at PawsHome truly cares about where their animals go. We felt supported every step of the way.
+                </p>
+              </div>
+              <div style={{ width: 420, height: 320, borderRadius: 28, background: '#b43c1e', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 90, opacity: 0.2, boxShadow: '0 20px 40px rgba(180,60,30,0.3)' }}>
+                “
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
@@ -346,6 +364,24 @@ const HomePage = () => {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+       {/* ── STATS BANNER ── */}
+      <section ref={statsRef} style={{ background: '#261E1A', padding: '64px 48px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 32, textAlign: 'center' }}>
+          {[
+            { num: '5,000+', label: 'Pets Adopted', icon: '🐾' },
+            { num: '1,200+', label: 'Happy Families', icon: '🏠' },
+            { num: '50+', label: 'Cities Covered', icon: '🗺️' },
+            { num: '98%', label: 'Satisfaction Rate', icon: '⭐' },
+          ].map(({ num, label, icon }, i) => (
+            <div key={label} style={{ ...visStyle(statsVisible, `${i * 0.1}s`) }}>
+              <div style={{ fontSize: 32, marginBottom: 8 }}>{icon}</div>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{num}</div>
+              <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.75)', marginTop: 8 }}>{label}</div>
+            </div>
+          ))}
         </div>
       </section>
 

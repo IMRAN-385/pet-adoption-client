@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { BsMoonStarsFill, BsSunFill } from 'react-icons/bs';
 import { FiMenu, FiX, FiChevronDown, FiLogOut, FiUser, FiList, FiPlusCircle, FiGrid } from 'react-icons/fi';
+import { FaPaw } from 'react-icons/fa';
 
 const Navbar = () => {
   const { user, logoutUser } = useAuth();

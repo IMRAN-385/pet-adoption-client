@@ -1,6 +1,6 @@
 import axios from './axios';
 
-export const getAllPets = () => axios.get('/pets');
+export const getAllPets = (params = {}) => axios.get('/pets', { params });
 export const getPetById = (id) => axios.get(`/pets/${id}`);
 export const getMyPets = () => axios.get('/pets/my');
 export const createPet = (data) => axios.post('/pets', data);
