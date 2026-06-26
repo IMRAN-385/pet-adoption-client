@@ -3,6 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import PetCard from '../components/pets/PetCard';
 import { getAllPets } from '../api/pets.api';
 import { useAuth } from '../context/AuthContext';
+import {
+  FaSearch,
+  FaHeart,
+  FaClipboardCheck,
+  FaHome,
+} from "react-icons/fa";
 
 const useReveal = (threshold = 0.12) => {
   const ref = useRef(null);
@@ -62,7 +68,7 @@ const HomePage = () => {
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: 'var(--bg)', color: 'var(--text)' }}>
 
-      {/* ── HERO ── */}
+     
       <section ref={heroRef} style={{
         position: 'relative', minHeight: '90vh',
         display: 'flex', alignItems: 'center', overflow: 'hidden',
@@ -178,7 +184,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ── WHY ADOPT ── */}
+    
       <section ref={whyRef} style={{ background: 'var(--surface)', padding: '88px 48px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 64, alignItems: 'center' }}>
           <div style={visStyle(whyVisible)}>
@@ -229,7 +235,6 @@ const HomePage = () => {
 
      
 
-      {/* ── SUCCESS STORIES ── (Vertical Staggered / Baka Design) */}
       <section ref={storiesRef} style={{ padding: '88px 48px', background: 'var(--bg)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <h2 style={{ 
@@ -342,31 +347,151 @@ const HomePage = () => {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section ref={adoptRef} style={{ padding: '88px 48px', background: 'var(--bg)' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px,4vw,40px)', textAlign: 'center', marginBottom: 12, ...visStyle(adoptVisible) }}>How It Works</h2>
-          <p style={{ textAlign: 'center', color: 'var(--text2)', fontSize: 15, marginBottom: 56, ...visStyle(adoptVisible, '0.1s') }}>Your journey to pet parenthood in 4 simple steps</p>
+      <section
+  ref={adoptRef}
+  style={{
+    padding: "100px 48px",
+    background: "var(--bg)",
+  }}
+>
+  <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <h2
+      style={{
+        fontFamily: "'Playfair Display', serif",
+        fontSize: "clamp(30px,4vw,44px)",
+        textAlign: "center",
+        marginBottom: 12,
+        ...visStyle(adoptVisible),
+      }}
+    >
+      How It Works
+    </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 24 }}>
-            {[
-              { step: '01', icon: '🔍', title: 'Browse Pets', text: 'Explore hundreds of adorable pets available for adoption in your area.' },
-              { step: '02', icon: '❤️', title: 'Find Your Match', text: 'Filter by species, age, and location to find your perfect companion.' },
-              { step: '03', icon: '📋', title: 'Submit Request', text: 'Fill out the adoption form with your pickup date and personal message.' },
-              { step: '04', icon: '🏠', title: 'Welcome Home', text: 'Once approved, pick up your new best friend and start your journey!' },
-            ].map(({ step, icon, title, text }, i) => (
-              <div key={step} style={{ textAlign: 'center', ...visStyle(adoptVisible, `${i * 0.1}s`) }}>
-                <div style={{ position: 'relative', marginBottom: 20 }}>
-                  <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(180,60,30,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, margin: '0 auto' }}>{icon}</div>
-                  <div style={{ position: 'absolute', top: -8, right: 'calc(50% - 44px)', background: '#b43c1e', color: '#fff', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700 }}>{step}</div>
-                </div>
-                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, marginBottom: 10 }}>{title}</h3>
-                <p style={{ fontSize: 14, color: 'var(--text2)', lineHeight: 1.6 }}>{text}</p>
-              </div>
-            ))}
+    <p
+      style={{
+        textAlign: "center",
+        color: "var(--text2)",
+        fontSize: 15,
+        maxWidth: 600,
+        margin: "0 auto 60px",
+        ...visStyle(adoptVisible, "0.1s"),
+      }}
+    >
+      A simple and transparent adoption process designed for pets and families.
+    </p>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+        gap: 28,
+      }}
+    >
+      {[
+        {
+          step: "01",
+          icon: <FaSearch />,
+          title: "Discover Pets",
+          text: "Explore verified pets from trusted shelters and responsible owners.",
+        },
+        {
+          step: "02",
+          icon: <FaHeart />,
+          title: "Find Your Match",
+          text: "Choose a companion that fits your lifestyle and preferences.",
+        },
+        {
+          step: "03",
+          icon: <FaClipboardCheck />,
+          title: "Submit Request",
+          text: "Send an adoption request and connect directly with the owner.",
+        },
+        {
+          step: "04",
+          icon: <FaHome />,
+          title: "Bring Them Home",
+          text: "Complete the process and welcome your new best friend.",
+        },
+      ].map(({ step, icon, title, text }, i) => (
+        <div
+          key={step}
+          style={{
+            background: "var(--surface)",
+            borderRadius: 24,
+            padding: "34px 24px",
+            textAlign: "center",
+            border: "1px solid var(--border)",
+            boxShadow: "0 10px 30px rgba(0,0,0,.06)",
+            transition: "all .3s ease",
+            ...visStyle(adoptVisible, `${i * 0.1}s`),
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-8px)";
+            e.currentTarget.style.boxShadow =
+              "0 18px 40px rgba(0,0,0,.12)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow =
+              "0 10px 30px rgba(0,0,0,.06)";
+          }}
+        >
+          <div
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 20,
+              background: "rgba(180,60,30,.08)",
+              color: "#b43c1e",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 32,
+              margin: "0 auto 20px",
+            }}
+          >
+            {icon}
           </div>
-        </div>
-      </section>
 
+          <div
+            style={{
+              display: "inline-block",
+              padding: "6px 14px",
+              borderRadius: 999,
+              background: "#b43c1e",
+              color: "#fff",
+              fontSize: 11,
+              fontWeight: 700,
+              marginBottom: 18,
+            }}
+          >
+            STEP {step}
+          </div>
+
+          <h3
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 22,
+              marginBottom: 12,
+            }}
+          >
+            {title}
+          </h3>
+
+          <p
+            style={{
+              color: "var(--text2)",
+              fontSize: 14,
+              lineHeight: 1.8,
+            }}
+          >
+            {text}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
        {/* ── STATS BANNER ── */}
       <section ref={statsRef} style={{ background: '#261E1A', padding: '64px 48px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 32, textAlign: 'center' }}>
