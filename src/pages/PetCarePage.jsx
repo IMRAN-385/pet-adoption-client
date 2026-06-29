@@ -1,3 +1,16 @@
+import { useState } from 'react';
+
+const T = {
+  bg:        '#080612',
+  surface:   'rgba(255,255,255,0.04)',
+  border:    'rgba(255,255,255,0.08)',
+  text:      '#f0eeff',
+  text2:     'rgba(240,238,255,0.55)',
+  text3:     'rgba(240,238,255,0.3)',
+  accent:    '#7c5cfc',
+  accentGlow:'rgba(124,92,252,0.25)',
+};
+
 const NutritionIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
@@ -50,49 +63,53 @@ const tips = [
   { Icon: MicrochipIcon, title: 'Microchip & ID tags',  text: 'Microchip your pet and keep ID tags updated. This dramatically increases reunion chances if they get lost.' },
 ];
 
-import { useState } from 'react';
-
 const TipCard = ({ Icon, title, text, index }) => {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      className={`animate-fadeInUp delay-${(index % 6) + 1}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: hovered ? 'var(--primary)' : 'var(--surface)',
-        borderRadius: 12,
-        border: `1px solid ${hovered ? 'var(--primary)' : 'var(--border)'}`,
-        padding: 24,
+        background: hovered ? 'rgba(124,92,252,0.12)' : T.surface,
+        borderRadius: 20,
+        border: `1px solid ${hovered ? 'rgba(124,92,252,0.35)' : T.border}`,
+        padding: 26,
         transition: 'all 0.25s ease',
-        transform: hovered ? 'translateY(-4px)' : 'none',
-        boxShadow: hovered ? '0 12px 32px rgba(232,97,42,0.25)' : 'none',
+        transform: hovered ? 'translateY(-6px)' : 'none',
+        boxShadow: hovered ? '0 16px 40px rgba(124,92,252,0.18)' : 'none',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
         cursor: 'default',
+        animationDelay: `${index * 0.07}s`,
       }}
     >
+      {/* Icon box */}
       <div style={{
-        width: 44, height: 44, borderRadius: 10,
-        background: hovered ? 'rgba(255,255,255,0.2)' : 'var(--primary-light)',
-        color: hovered ? '#fff' : 'var(--primary)',
+        width: 48, height: 48, borderRadius: 14,
+        background: hovered ? 'rgba(124,92,252,0.25)' : 'rgba(124,92,252,0.1)',
+        border: `1px solid ${hovered ? 'rgba(124,92,252,0.4)' : 'rgba(124,92,252,0.2)'}`,
+        color: hovered ? '#c4b0ff' : '#a78bfa',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        marginBottom: 16,
+        marginBottom: 20,
         transition: 'all 0.25s ease',
       }}>
         <Icon />
       </div>
+
       <h4 style={{
         fontSize: 15, fontWeight: 700,
-        color: hovered ? '#fff' : 'var(--text)',
-        marginBottom: 8,
-        transition: 'color 0.25s ease',
+        color: hovered ? T.text : T.text,
+        marginBottom: 10,
+        fontFamily: "'DM Sans', sans-serif",
       }}>
         {title}
       </h4>
       <p style={{
         fontSize: 13,
-        color: hovered ? 'rgba(255,255,255,0.85)' : 'var(--text2)',
-        lineHeight: 1.7,
+        color: hovered ? 'rgba(240,238,255,0.75)' : T.text2,
+        lineHeight: 1.75,
         transition: 'color 0.25s ease',
+        margin: 0,
       }}>
         {text}
       </p>
@@ -101,23 +118,56 @@ const TipCard = ({ Icon, title, text, index }) => {
 };
 
 const PetCarePage = () => (
-  <div className="page-enter" style={{ padding: '56px 24px 80px', maxWidth: 1100, margin: '0 auto' }}>
-    <div style={{ marginBottom: 48 }}>
-      <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text3)', marginBottom: 10, textTransform: 'uppercase' }}>
-        Guide
-      </p>
-      <h2 style={{ fontSize: 'clamp(28px,4vw,42px)', fontFamily: "'Playfair Display', serif", fontWeight: 700, color: 'var(--text)', lineHeight: 1.1, marginBottom: 12 }}>
-        Pet care tips
-      </h2>
-      <p style={{ color: 'var(--text2)', fontSize: 15, maxWidth: 480 }}>
-        Expert advice to help your companion thrive in their forever home.
-      </p>
-    </div>
+  <div style={{
+    background: T.bg,
+    minHeight: '100vh',
+    fontFamily: "'DM Sans', sans-serif",
+    paddingTop: 64,
+    position: 'relative',
+    overflow: 'hidden',
+  }}>
+    <style>{`
+      @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+      @keyframes pulse { 0%,100%{opacity:0.55} 50%{opacity:1} }
+      .care-card-anim { animation: fadeInUp 0.5s ease both; }
+    `}</style>
 
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 16 }}>
-      {tips.map(({ Icon, title, text }, i) => (
-        <TipCard key={title} Icon={Icon} title={title} text={text} index={i} />
-      ))}
+    {/* Ambient orbs */}
+    <div style={{ position:'fixed', top:'5%', right:'8%', width:420, height:420, borderRadius:'50%', background:'radial-gradient(circle,rgba(100,60,220,0.18) 0%,transparent 70%)', pointerEvents:'none', zIndex:0, filter:'blur(2px)' }} />
+    <div style={{ position:'fixed', bottom:'10%', left:'5%', width:300, height:300, borderRadius:'50%', background:'radial-gradient(circle,rgba(80,40,180,0.12) 0%,transparent 70%)', pointerEvents:'none', zIndex:0 }} />
+
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '56px 28px 80px', position:'relative', zIndex:1 }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: 56, animation: 'fadeInUp 0.5s ease both' }}>
+        {/* Eyebrow */}
+        <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'rgba(124,92,252,0.12)', border:'1px solid rgba(124,92,252,0.25)', borderRadius:50, padding:'6px 16px', marginBottom:24 }}>
+          <span style={{ width:6, height:6, borderRadius:'50%', background:'#a78bfa', display:'inline-block', animation:'pulse 2s ease-in-out infinite' }} />
+          <span style={{ fontSize:11, fontWeight:700, color:'#b8a0ff', letterSpacing:'.08em', textTransform:'uppercase' }}>Expert Advice</span>
+        </div>
+
+        <h2 style={{
+          fontSize: 'clamp(30px,4vw,48px)',
+          fontFamily: "'Playfair Display', serif",
+          fontWeight: 700, color: T.text,
+          lineHeight: 1.1, marginBottom: 16,
+        }}>
+          Pet Care{' '}
+          <span style={{ background:'linear-gradient(135deg,#a78bfa,#7c5cfc)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', fontStyle:'italic' }}>
+            Guide
+          </span>
+        </h2>
+        <p style={{ color: T.text2, fontSize: 15, maxWidth: 480, lineHeight: 1.75, margin: 0 }}>
+          Expert advice to help your companion thrive in their forever home.
+        </p>
+      </div>
+
+      {/* Grid */}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:18 }}>
+        {tips.map(({ Icon, title, text }, i) => (
+          <TipCard key={title} Icon={Icon} title={title} text={text} index={i} />
+        ))}
+      </div>
     </div>
   </div>
 );

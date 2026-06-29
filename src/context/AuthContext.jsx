@@ -5,14 +5,12 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  // ✅ BetterAuth এর built-in hook — Firebase এর onAuthStateChanged এর replacement
-  // loading: true যখন session check হচ্ছে
-  // data: session object (data.user তে user info)
+ 
   const { data: session, isPending: loading, refetch } = authClient.useSession();
 
   const user = session?.user || null;
 
-  // ✅ Register — আগে: register({ name, email, password, photoURL })
+ 
   const registerUser = async (name, email, password, photoURL) => {
     const { data, error } = await authClient.signUp.email({
       email,
@@ -25,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  // ✅ Email Login — আগে: login({ email, password })
+ 
   const loginUser = async (email, password) => {
     const { data, error } = await authClient.signIn.email({
       email,
@@ -36,8 +34,7 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  // ✅ Google Login — আগে: signInWithPopup(auth, googleProvider) + googleAuth() API call
-  // এখন একটাই call, BetterAuth সব handle করে
+ 
   const googleLogin = async () => {
   const { data, error } = await authClient.signIn.social({
     provider: 'google',
@@ -48,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   return data;
 };
 
-  // ✅ Logout — আগে: logout() API + signOut(auth)
+
   const logoutUser = async () => {
     const { error } = await authClient.signOut();
     if (error) {
